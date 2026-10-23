@@ -1,0 +1,27 @@
+# Compiled Binaries & Build Outputs
+*.exe
+*.dll
+*.sys
+*.obj
+*.pdb
+*.ilk
+bin/*
+!bin/.gitkeep
+dist-*/
+
+# Python Environments & Caches
+__pycache__/
+*.py[cod]
+.venv/
+env/
+*.egg-info/
+
+# IDE & Tooling
+.vscode/
+.idea/
+*.user
+*.suo
+
+# GitHub Artifact Downloads
+/bin/*
+!/bin/.gitkeep
