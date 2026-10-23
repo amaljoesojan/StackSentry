@@ -1,0 +1,36 @@
+name: StackSentry Build Engine (Windows x64)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC Developer Environment
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Compile Windows Sensor
+        run: |
+          mkdir dist-windows
+          cl.exe /EHsc /O2 /std:c++20 /W4 /I sensor/include sensor/src/*.cpp /Fe:dist-windows/stacksentry_sensor_x64.exe /link /SUBSYSTEM:CONSOLE Dbghelp.lib Ws2_32.lib User32.lib
+
+      - name: Compile Test Harness (If present)
+        run: |
+          if (Test-Path "test_harness/*.cpp") {
+            cl.exe /EHsc /O2 /std:c++20 /I sensor/include test_harness/*.cpp /Fe:dist-windows/test_harness_x64.exe /link /SUBSYSTEM:CONSOLE Dbghelp.lib
+          }
+
+      - name: Upload Windows Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: stacksentry-windows-x64
+          path: dist-windows/*
+          retention-days: 7
